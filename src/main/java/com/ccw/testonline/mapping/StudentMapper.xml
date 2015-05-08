@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccw.testonline.entity.Student" >
+
+  <resultMap id="BaseResultMap" type="com.ccw.testonline.entity.Student" >
+    <id column="stu_id" property="stuId" jdbcType="INTEGER" />
+    <result column="stu_name" property="stuName" jdbcType="VARCHAR" />
+    <result column="stu_password" property="stuPassword" jdbcType="VARCHAR" />
+    <result column="stu_sex" property="stuSex" jdbcType="CHAR" />
+    <result column="stu_email" property="stuEmail" jdbcType="VARCHAR" />
+    <result column="stu_phone" property="stuPhone" jdbcType="VARCHAR" />
+    
+     <!-- 关联 -->
+    <association property="clazz" column="class_id" javaType="com.ccw.testonline.entity.Classes">
+    	<id column="class_id" property="classId" jdbcType="INTEGER" />
+    <result column="class_name" property="className" jdbcType="VARCHAR" />
+    <result column="grade" property="grade" jdbcType="INTEGER" />
+    </association>
+    
+  </resultMap>
+ 
+ 
+  <!-- 表名 -->
+	<sql id="StudentTable">
+		Student as s
+	</sql>
+	
+	<!-- 表名 -->
+	<sql id="SCTable">
+		Student as s,Class as c
+	</sql>
+  
+  <!-- 列 -->
+  <sql id="Base_Column_List" >
+    s.stu_id, s.stu_name,s.stu_sex,s.stu_email, s.stu_phone,s.stu_password,c.class_id, c.class_name,c.grade
+  </sql>
+  
+  <!-- 按主键查找条件语句 -->
+	<sql id="conditionOnlyId">
+		id = #{id}
+	</sql>
+	
+	<!-- 查询 -->
+	<sql id="mainSql">
+		SELECT
+			<include refid="Base_Column_List"/>
+		FROM
+			<include refid="SCTable"/>
+	</sql>
+	
+	<sql id="varSql">
+		<where>
+		s.class_id = c.class_id
+			<!-- <if test="clazz.classId!=null">and s.class_id = c.class_id </if> -->
+			<if test="stuName!=null and stuName!=''">and s.stu_name like #{stuName} </if>
+		</where>
+	</sql>
+	
+	<select id="findListByPage"  parameterType="Map" resultMap="BaseResultMap">
+ 		<include refid="mainSql"/>
+ 		<include refid="varSql"/>
+		<if test="SORT != null and SORT != ''">
+ 			order by ${SORT}
+ 			<if test="DIR != null and DIR != ''">
+ 				 ${DIR}
+ 			</if>
+ 		</if>
+	</select> 
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="INTEGER">
+		SELECT
+			COUNT(*) AS C
+		FROM
+			<include refid="SCTable"/>
+		<include refid="varSql"/>
+	</select> 
+ 
+ <update id="changePwd" parameterType="com.ccw.testonline.entity.Student">
+		update Student
+		set stu_password = #{stuPassword,jdbcType=VARCHAR}
+		where stu_id= #{stuId}
+	</update>
+ 
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" /> 
+    from Student as s,Class as c
+    where s.class_id = c.class_id and s.stu_id = #{id,jdbcType=INTEGER}
+  </select>
+  
+   <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    *
+    from Student as s
+    where s.stu_id = #{stuId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from Student
+    where stu_id = #{stuId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ccw.testonline.entity.Student" >
+    insert into Student (stu_id, class_id, stu_name, 
+      stu_password, stu_sex, stu_email, 
+      stu_phone)
+    values (#{stuId,jdbcType=INTEGER}, #{clazz.classId,jdbcType=INTEGER}, #{stuName,jdbcType=VARCHAR}, 
+      #{stuPassword,jdbcType=VARCHAR}, #{stuSex,jdbcType=CHAR}, #{stuEmail,jdbcType=VARCHAR}, 
+      #{stuPhone,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.ccw.testonline.entity.Student" >
+    insert into Student
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="stuId != null" >
+        stu_id,
+      </if>
+      <if test="clazz.classId != null" >
+        class_id,
+      </if>
+      <if test="stuName != null" >
+        stu_name,
+      </if>
+      <if test="stuPassword != null" >
+        stu_password,
+      </if>
+      <if test="stuSex != null" >
+        stu_sex,
+      </if>
+      <if test="stuEmail != null" >
+        stu_email,
+      </if>
+      <if test="stuPhone != null" >
+        stu_phone,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="stuId != null" >
+        #{stuId,jdbcType=INTEGER},
+      </if>
+      <if test="clazz.classId != null" >
+        #{clazz.classId,jdbcType=INTEGER},
+      </if>
+      <if test="stuName != null" >
+        #{stuName,jdbcType=VARCHAR},
+      </if>
+      <if test="stuPassword != null" >
+        #{stuPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="stuSex != null" >
+        #{stuSex,jdbcType=CHAR},
+      </if>
+      <if test="stuEmail != null" >
+        #{stuEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="stuPhone != null" >
+        #{stuPhone,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.ccw.testonline.entity.Student" >
+    update Student
+    <set >
+      <if test="clazz.classId != null" >
+        class_id = #{clazz.classId,jdbcType=INTEGER},
+      </if>
+      <if test="stuName != null" >
+        stu_name = #{stuName,jdbcType=VARCHAR},
+      </if>
+      <if test="stuPassword != null" >
+        stu_password = #{stuPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="stuSex != null" >
+        stu_sex = #{stuSex,jdbcType=CHAR},
+      </if>
+      <if test="stuEmail != null" >
+        stu_email = #{stuEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="stuPhone != null" >
+        stu_phone = #{stuPhone,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where stu_id = #{stuId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ccw.testonline.entity.Student" >
+    update Student
+    set class_id = #{clazz.classId,jdbcType=INTEGER},
+      stu_name = #{stuName,jdbcType=VARCHAR},
+      stu_password = #{stuPassword,jdbcType=VARCHAR},
+      stu_sex = #{stuSex,jdbcType=CHAR},
+      stu_email = #{stuEmail,jdbcType=VARCHAR},
+      stu_phone = #{stuPhone,jdbcType=VARCHAR}
+    where stu_id = #{stuId,jdbcType=INTEGER}
+  </update>
+</mapper>

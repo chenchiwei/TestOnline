@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ehcache>
+	<diskStore path="java.io.tmpdir/shiro-ehcache" />
+	
+	<defaultCache maxElementsInMemory="10000" 
+              eternal="false"
+              timeToIdleSeconds="120" 
+              timeToLiveSeconds="120" 
+              overflowToDisk="false"
+              diskPersistent="false" 
+              diskExpiryThreadIntervalSeconds="120" />
+              
+	<!-- 
+		shiro默认cache名shiro-activeSessionCache
+		eternal必需设置为true,缓存永久存在
+		overflowToDisk设置为true
+		timeToLiveSeconds存活的时间
+		timeToIdleSeconds多久不访问后清除缓存
+		设置了eternal以上两个属性就无用
+		diskExpiryThreadIntervalSeconds清除磁盘中失效对象的间隔
+	 -->
+	<cache name="shiro-activeSessionCache" 
+			maxElementsInMemory="10000"
+			overflowToDisk="true" 
+			eternal="true" 
+			timeToLiveSeconds="120"
+			timeToIdleSeconds="120" 
+			diskPersistent="true"
+			diskExpiryThreadIntervalSeconds="600" />
+			
+         <!-- 权限cache，默认命名shiro.authorizationCache -->
+        <cache name="shiro.authorizationCache" 
+                 maxElementsInMemory="100"
+                 eternal="true" 
+                 timeToLiveSeconds="120" 
+                 overflowToDisk="true" />
+                 
+</ehcache>

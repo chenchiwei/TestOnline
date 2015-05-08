@@ -1,0 +1,47 @@
+.head{
+	/* background: url("../images/top.jpg"); */
+	background: #fcfcfd url("../images/top.png") right no-repeat ;
+}
+
+.titleTop{
+	width:400px;
+	height:60px;
+	float:left;
+	margin-left:90px;
+	background: url("../images/title.png") left no-repeat;
+}
+
+.hometitle{
+	width:auto;
+	color:#479af5;
+	text-align: center;
+	margin: 0 auto;
+}
+
+#main{
+	margin:0 auto;
+	width:auto;
+	height:500px;
+	padding:10px;
+	background: url("../images/main.png") no-repeat center;
+}
+
+.copyrightInfo{
+	padding:6px;
+	background: #fcfcfd;
+	text-align: center;
+	font-size: 12px;
+	line-height: 12px;
+}
+
+.userInfo{
+	float:right;
+	padding:5px 10px;	
+}
+
+.heightline{
+	width:1px;
+	height: 100%;
+	color: #479af5;
+	margin-right: 5px;
+}

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccw.testonline.entity.Major" >
+
+  <resultMap id="BaseResultMap" type="com.ccw.testonline.entity.Major" >
+    <id column="major_id" property="majorId" jdbcType="INTEGER" />
+    <result column="major_name" property="majorName" jdbcType="VARCHAR" />
+    <result column="major_desc" property="majorDesc" jdbcType="VARCHAR" />
+    
+    <association property="academy" column="academy_id" javaType="com.ccw.testonline.entity.Academy">
+    	 <id column="academy_id" property="academyId" jdbcType="INTEGER" />
+    <result column="academy_name" property="academyName" jdbcType="VARCHAR" />
+    <result column="academy_desc" property="academyDesc" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+  
+   <resultMap id="ResultMap" type="com.ccw.testonline.bean.ResultBean" >
+    <id column="major_id" property="id" jdbcType="INTEGER" />
+    <result column="major_name" property="value" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    m.major_id, m.academy_id, m.major_name, m.major_desc
+  </sql>
+  
+   <sql id="SingleTable">
+		Major as m
+	</sql>
+  
+  <sql id="TableName">
+		Major as m,Academy as a
+	</sql>
+  
+  <!-- 查询 -->
+	<sql id="mainSql">
+		SELECT
+			<include refid="Base_Column_List"/>
+		FROM
+			<include refid="TableName"/>
+	</sql>
+	
+	<sql id="varSql">
+		<where>
+			<if test="academy_id!=null">and m.academy_id = a.academy_id </if>
+			<if test="major_name!=null and major_name!=''">and m.major_name like #{majorName} </if>
+			<if test="major_desc!=null and major_desc!=''">and m.major_desc like #{majorDesc} </if>
+		</where>
+	</sql>
+	
+	<select id="findListByPage"  parameterType="Map" resultMap="BaseResultMap">
+ 		<include refid="mainSql"/>
+ 		<include refid="varSql"/>
+		<if test="SORT != null and SORT != ''">
+ 			order by ${SORT}
+ 			<if test="DIR != null and DIR != ''">
+ 				 ${DIR}
+ 			</if>
+ 		</if>
+	</select> 
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="INTEGER">
+		SELECT
+			COUNT(*) AS C
+		FROM
+			<include refid="TableName"/>
+		<include refid="varSql"/>
+	</select>
+  
+  <select id="findAll"  parameterType="Map" resultMap="ResultMap">
+ 		select * from Major
+	</select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from Major as m
+    where m.major_id = #{majorId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from Major
+    where major_id = #{majorId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ccw.testonline.entity.Major" >
+    insert into Major (major_id, academy_id, major_name, 
+      major_desc)
+    values (#{majorId,jdbcType=INTEGER}, #{academy.academyId,jdbcType=INTEGER}, #{majorName,jdbcType=VARCHAR}, 
+      #{majorDesc,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ccw.testonline.entity.Major" >
+    insert into Major
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="majorId != null" >
+        major_id,
+      </if>
+      <if test="academy.academyId != null" >
+        academy_id,
+      </if>
+      <if test="majorName != null" >
+        major_name,
+      </if>
+      <if test="majorDesc != null" >
+        major_desc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="majorId != null" >
+        #{majorId,jdbcType=INTEGER},
+      </if>
+      <if test="academy.academyId != null" >
+        #{academy.academyId,jdbcType=INTEGER},
+      </if>
+      <if test="majorName != null" >
+        #{majorName,jdbcType=VARCHAR},
+      </if>
+      <if test="majorDesc != null" >
+        #{majorDesc,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ccw.testonline.entity.Major" >
+    update Major
+    <set >
+      <if test="academy.academyId != null" >
+        academy_id = #{academy.academyId,jdbcType=INTEGER},
+      </if>
+      <if test="majorName != null" >
+        major_name = #{majorName,jdbcType=VARCHAR},
+      </if>
+      <if test="majorDesc != null" >
+        major_desc = #{majorDesc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where major_id = #{majorId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ccw.testonline.entity.Major" >
+    update Major
+    set academy_id = #{academy.academyId,jdbcType=INTEGER},
+      major_name = #{majorName,jdbcType=VARCHAR},
+      major_desc = #{majorDesc,jdbcType=VARCHAR}
+    where major_id = #{majorId,jdbcType=INTEGER}
+  </update>
+</mapper>

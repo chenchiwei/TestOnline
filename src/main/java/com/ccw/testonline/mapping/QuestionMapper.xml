@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccw.testonline.entity.Question">
+
+	<resultMap id="BaseResultMap" type="com.ccw.testonline.entity.Question">
+		<id column="question_id" property="questionId" jdbcType="INTEGER" />
+		<result column="question_content" property="questionContent"
+			jdbcType="VARCHAR" />
+		<result column="question_type" property="questionType"
+			jdbcType="INTEGER" />
+		<result column="question_level" property="questionLevel"
+			jdbcType="VARCHAR" />
+		<result column="question_answer" property="questionAnswer"
+			jdbcType="VARCHAR" />
+
+		<association property="course" column="course_id"
+			javaType="com.ccw.testonline.entity.Course">
+			<id column="course_id" property="courseId" jdbcType="INTEGER" />
+			<result column="course_name" property="courseName" jdbcType="VARCHAR" />
+		</association>
+
+		<!-- 一个题目对应一个学生回答的答案，一对一 -->
+		<association property="answer" javaType="com.ccw.testonline.entity.Answer">
+			<id column="answer_id" property="answerId" jdbcType="INTEGER" />
+			<result column="answer_content" property="answerContent"
+				jdbcType="VARCHAR" />
+		</association>
+
+		<collection property="options" ofType="com.ccw.testonline.entity.Options">
+			<id column="option_id" property="optionId" jdbcType="INTEGER" />
+			<result column="option_content" property="optionContent"
+				jdbcType="VARCHAR" />
+		</collection>
+
+		<collection property="homeWorkQuestions"
+			ofType="com.ccw.testonline.entity.HomeWorkQuestion">
+			<id column="hw_question_id" property="hwQuestionId" jdbcType="INTEGER" />
+			<result column="score" property="score" jdbcType="FLOAT" />
+		</collection>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		q.question_id, q.question_content, q.question_type, q.question_level,
+		q.question_answer
+	</sql>
+
+	<select id="showHomework1" parameterType="Map" resultMap="BaseResultMap">
+		select * from Question as q,HomeWork_Question as hq,Options as o
+		where q.question_id=hq.question_id and hq.tea_hw_id=#{id}
+		and o.question_id=q.question_id and (q.question_type=1 or q
+		.question_type=2)
+		order by q.question_type asc,o.option_content asc
+	</select>
+
+	<select id="showHomework2" parameterType="Map" resultMap="BaseResultMap">
+		select * from Question as q,HomeWork_Question as hq
+		where q.question_id=hq.question_id and hq.tea_hw_id=#{id}
+		and q.question_type=3 order by q.question_level asc
+	</select>
+
+	<select id="showMyHomework1" parameterType="Map" resultMap="BaseResultMap">
+		select * from Question as q,HomeWork_Question as hq,Answer as
+		a,Options as o,
+		Student_Homework as sh
+		where q.question_id=hq.question_id and hq.tea_hw_id=#{id} and
+		a.stu_hw_id=sh.id
+		and sh.stu_id=#{stuId}
+		and a.question_id=q.question_id and o.question_id=q.question_id
+		and (q.question_type=1 or q.question_type=2)
+		order by q.question_type asc,o.option_content asc
+	</select>
+
+	<select id="showMyHomework2" parameterType="Map" resultMap="BaseResultMap">
+		select * from Question as q,HomeWork_Question as hq,Answer as
+		a,Student_Homework as sh
+		where q.question_id=hq.question_id and hq.tea_hw_id=#{id} and
+		a.stu_hw_id=sh.id
+		and sh.stu_id=#{stuId}
+		and a.question_id=q.question_id
+		and q.question_type=3
+		order by q.question_level asc
+	</select>
+
+	<select id="showAnswer1" parameterType="Map" resultMap="BaseResultMap">
+		select * from Question as q,HomeWork_Question as hq,Options as o
+		 where q.question_id=hq.question_id and hq.tea_hw_id=#{teaHwId} and
+		 o.question_id=q.question_id
+		and (q.question_type=1 or q.question_type=2)
+		order by q.question_type asc,o.option_content asc
+	</select>
+
+	<select id="showAnswer2" parameterType="Map" resultMap="BaseResultMap">
+		select * from Question as q,HomeWork_Question as hq
+		 where q.question_id=hq.question_id and hq.tea_hw_id=#{teaHwId} and
+		  q.question_type=3
+		order by q.question_type asc
+	</select>
+
+	<sql id="mainSql">
+		SELECT
+		*
+		FROM
+		Question as q
+	</sql>
+
+	<sql id="varSql">
+		<where>
+			
+			<if test="courseId!=null">and q.course_id = #{courseId} </if>
+		</where>
+	</sql>
+
+	<select id="findListByPage" parameterType="Map" resultMap="BaseResultMap">
+		<include refid="mainSql" />
+		<include refid="varSql" />
+		<if test="SORT != null and SORT != ''">
+			order by ${SORT}
+			<if test="DIR != null and DIR != ''">
+				${DIR}
+			</if>
+		</if>
+	</select>
+	
+	<select id="findListByPage1" parameterType="Map" resultMap="BaseResultMap">
+		SELECT
+		*
+		FROM
+		Question as q,Course as c where c.course_id=q.course_id
+	</select>
+
+	<select id="getCount1" parameterType="java.util.Map" resultType="INTEGER">
+		SELECT
+		COUNT(*) AS C
+		FROM
+		Question as q,Course as c where c.course_id=q.course_id
+	</select>
+
+	<select id="getCount" parameterType="java.util.Map" resultType="INTEGER">
+		SELECT
+		COUNT(*) AS C
+		FROM
+		Question as q
+		<include refid="varSql" />
+	</select>
+
+	<select id="getScore" parameterType="java.util.Map" resultType="java.lang.Float">
+		SELECT
+		score 
+		FROM
+		Student_Homework sh 
+		where sh.stu_id=#{stuId} and sh.tea_hw_id=#{id}
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from Question
+		where question_id = #{questionId,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from Question
+		where question_id = #{questionId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.ccw.testonline.entity.Question">
+		insert into Question (question_id, question_content, question_type,
+		question_level, question_answer)
+		values (#{questionId,jdbcType=INTEGER}, #{questionContent,jdbcType=VARCHAR},
+		#{questionType,jdbcType=INTEGER},
+		#{questionLevel,jdbcType=VARCHAR}, #{questionAnswer,jdbcType=VARCHAR})
+	</insert>
+
+	<insert id="insertSelective" useGeneratedKeys="true"
+		keyProperty="questionId" parameterType="com.ccw.testonline.entity.Question">
+		insert into Question
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="questionId != null">
+				question_id,
+			</if>
+			<if test="questionContent != null">
+				question_content,
+			</if>
+			<if test="questionType != null">
+				question_type,
+			</if>
+			<if test="questionLevel != null">
+				question_level,
+			</if>
+			<if test="questionAnswer != null">
+				question_answer,
+			</if>
+			<if test="course.courseId != null">
+				course_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="questionId != null">
+				#{questionId,jdbcType=INTEGER},
+			</if>
+			<if test="questionContent != null">
+				#{questionContent,jdbcType=VARCHAR},
+			</if>
+			<if test="questionType != null">
+				#{questionType,jdbcType=INTEGER},
+			</if>
+			<if test="questionLevel != null">
+				#{questionLevel,jdbcType=VARCHAR},
+			</if>
+			<if test="questionAnswer != null">
+				#{questionAnswer,jdbcType=VARCHAR},
+			</if>
+			<if test="course.courseId != null">
+				#{course.courseId,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.ccw.testonline.entity.Question">
+		update Question
+		<set>
+			<if test="questionContent != null">
+				question_content = #{questionContent,jdbcType=VARCHAR},
+			</if>
+			<if test="questionType != null">
+				question_type = #{questionType,jdbcType=INTEGER},
+			</if>
+			<if test="questionLevel != null">
+				question_level = #{questionLevel,jdbcType=VARCHAR},
+			</if>
+			<if test="questionAnswer != null">
+				question_answer = #{questionAnswer,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where question_id = #{questionId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ccw.testonline.entity.Question">
+		update Question
+		set question_content = #{questionContent,jdbcType=VARCHAR},
+		question_type = #{questionType,jdbcType=INTEGER},
+		question_level = #{questionLevel,jdbcType=VARCHAR},
+		question_answer = #{questionAnswer,jdbcType=VARCHAR}
+		where question_id = #{questionId,jdbcType=INTEGER}
+	</update>
+</mapper>

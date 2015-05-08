@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccw.testonline.entity.StudentHomework">
+	<resultMap id="BaseResultMap" type="com.ccw.testonline.entity.StudentHomework">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="submit_time" property="submitTime" jdbcType="DATE" />
+		<result column="score" property="score" jdbcType="FLOAT" />
+
+		<association property="student" column="stu_id"
+			javaType="com.ccw.testonline.entity.Student">
+			<id column="stu_id" property="stuId" jdbcType="INTEGER" />
+			<result column="stu_name" property="stuName" jdbcType="VARCHAR" />
+		</association>
+
+		<association property="homework" column="tea_hw_id"
+			javaType="com.ccw.testonline.entity.Homework">
+			<id column="tea_hw_id" property="teaHwId" jdbcType="INTEGER" />
+			<result column="tea_hw_name" property="teaHwName" jdbcType="VARCHAR" />
+			<result column="tea_hw_ask_time" property="teaHwAskTime"
+				jdbcType="DATE" />
+
+		</association>
+	</resultMap>
+
+	<resultMap id="CountMap" type="com.ccw.testonline.vo.StudentClassVo">
+		<result column="classId" property="classId" jdbcType="INTEGER" />
+		<result column="className" property="className" jdbcType="VARCHAR" />
+		<result column="count" property="count" jdbcType="INTEGER" />
+	</resultMap>
+
+	<insert id="insertSelective" useGeneratedKeys="true"
+		keyProperty="id" parameterType="com.ccw.testonline.entity.StudentHomework">
+		insert into Student_Homework
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="submitTime != null">
+				submit_time,
+			</if>
+			<if test="student.stuId != null">
+				stu_id,
+			</if>
+			<if test="homework.teaHwId != null">
+				tea_hw_id,
+			</if>
+			<if test="score != null">
+				score,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="submitTime != null">
+				#{submitTime,jdbcType=DATE},
+			</if>
+			<if test="student.stuId != null">
+				#{student.stuId,jdbcType=INTEGER},
+			</if>
+			<if test="homework.teaHwId != null">
+				#{homework.teaHwId,jdbcType=INTEGER},
+			</if>
+			<if test="score != null">
+				#{score,jdbcType=FLOAT},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateScore" parameterType="com.ccw.testonline.entity.StudentHomework">
+		update Student_Homework
+		<set>
+			<if test="score != null">
+				score=#{score,jdbcType=FLOAT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<delete id="deleteByHwId" parameterType="java.lang.Integer">
+		delete from
+		Student_Homework
+		where tea_hw_id = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<select id="findListByPage" parameterType="Map" resultMap="BaseResultMap">
+		Select * from Student_Homework as sh,Student as s,Class as c
+		where
+		sh.tea_hw_id = #{teaHwId} and s.stu_id=sh.stu_id
+		and
+		c.class_id=s.class_id
+		<if test="SORT != null and SORT != ''">
+			order by ${SORT}
+			<if test="DIR != null and DIR != ''">
+				${DIR}
+			</if>
+		</if>
+	</select>
+
+	<select id="getCount" parameterType="java.util.Map" resultType="INTEGER">
+		SELECT
+		COUNT(*) AS C
+		FROM
+		Student_Homework as sh,Student as s,Class as c
+		where sh.tea_hw_id = #{teaHwId} and s.stu_id=sh.stu_id
+		and
+		c.class_id=s.class_id
+	</select>
+
+	<!-- <resultMap id="CountMap" type="com.ccw.testonline.vo.StuClassVo"> <result 
+		column="classId" property="classId" jdbcType="INTEGER" /> <result column="class_name" 
+		property="className" jdbcType="VARCHAR" /> <result column="c_count" property="classCount" 
+		jdbcType="INTEGER" /> <result column="s_count" property="stuCount" jdbcType="INTEGER" 
+		/> </resultMap> -->
+
+
+
+	<!-- <select id="findClassNumAndStuNum" parameterType="java.util.Map" resultType="CountMap"> 
+		select c.class_id ,c.class_name,count(distinct c.class_id) as c_count,count(distinct 
+		s.stu_id) as s_count from Class as c,Classes_Homework as ch,student as s 
+		where s.class_id=c.class_id and c.class_id=ch.class_id and ch.tea_hw_id=#{teaHwId} 
+		group by c.class_id </select> -->
+
+	<select id="findClassNumAndStuNum" parameterType="java.util.Map"
+		resultMap="CountMap">
+		select c.class_id as classId,c.class_name as
+		className,count(distinct s.stu_id) as
+		count from Student as
+		s,Student_Homework as sh,Class as c where
+		s.stu_id=sh.stu_id and
+		s.class_id=c.class_id and sh.tea_hw_id=#{teaHwId} and
+		s.class_id in
+		(select distinct c2.class_id from Class as
+		c2,Classes_Homework as ch1
+		where c2.class_id=ch1.class_id
+		and ch1.tea_hw_id=#{teaHwId}) group by
+		classId union
+		select c1.class_id as
+		classId,c1.class_name as
+		className,count(distinct s1.stu_id) as count
+		from
+		Class as
+		c1,Classes_Homework as ch,Student as s1 where
+		ch.class_id=c1.class_id
+		and s1.class_id=c1.class_id and
+		ch.tea_hw_id=#{teaHwId}
+		group by classId
+		order by classId asc,count asc
+	</select>
+
+	<select id="findFinishNum" parameterType="java.util.Map"
+		resultType="INTEGER">
+		select * from Student as s,Student_Homework as sh,Class as
+		c where s.stu_id=sh.stu_id and s.class_id=c.class_id
+		and
+		sh.tea_hw_id=#{teaHwId}
+		and s.class_id in
+		(select distinct c.class_id
+		from Class as
+		c,Classes_Homework as ch
+		where c.class_id=ch.class_id
+		and
+		ch.tea_hw_id=#{teaHwId})
+	</select>
+
+	<resultMap id="StudentMap" type="com.ccw.testonline.vo.FinishStudentVo">
+		<result column="stu_id" property="stuId" jdbcType="INTEGER" />
+		<result column="stu_name" property="stuName" jdbcType="VARCHAR" />
+		<result column="class_name" property="className" jdbcType="VARCHAR" />
+		<result column="submit_time" property="submitTime" jdbcType="DATE" />
+	</resultMap>
+
+	<select id="findFinishedStudent" parameterType="java.util.Map"
+		resultMap="StudentMap">
+		select distinct
+		s.stu_id,s.stu_name,c.class_name,sh.submit_time from Student as
+		s,Class as c,Classes_Homework as ch,Student_Homework as sh where
+		s.class_id=c.class_id and c.class_id=ch.class_id and
+		c.class_id=#{classId}
+		and
+		sh.stu_id=s.stu_id and sh.tea_hw_id=#{teaHwId}
+	</select>
+
+	<select id="getFinishedCount" parameterType="java.util.Map"
+		resultType="INTEGER">
+		select count(distinct
+		s.stu_id,s.stu_name,c.class_name,sh.submit_time) as count from Student
+		as
+		s,Class as c,Classes_Homework as ch,Student_Homework as sh where
+		s.class_id=c.class_id and c.class_id=ch.class_id and
+		c.class_id=#{classId}
+		and
+		sh.stu_id=s.stu_id and sh.tea_hw_id=#{teaHwId}
+	</select>
+
+	<select id="findUnfinishedStudent" parameterType="java.util.Map"
+		resultMap="StudentMap">
+		select distinct s.stu_id,s.stu_name,c.class_name from
+		Student as s,Class as c,Classes_Homework as ch where
+		s.class_id=c.class_id and c.class_id=ch.class_id
+		and
+		c.class_id=#{classId} and
+		s.stu_id not in (select s1.stu_id from
+		Student as s1,
+		Student_Homework as
+		sh where s1.stu_id=sh.stu_id and
+		sh.tea_hw_id=#{teaHwId})
+	</select>
+
+	<select id="getUnfinishedCount" parameterType="java.util.Map"
+		resultType="INTEGER">
+		select count(distinct s.stu_id,s.stu_name,c.class_name) as
+		count from
+		Student as s,Class as c,Classes_Homework as ch where
+		s.class_id=c.class_id and c.class_id=ch.class_id
+		and
+		c.class_id=#{classId} and
+		s.stu_id not in (select s1.stu_id from
+		Student as s1,
+		Student_Homework as
+		sh where s1.stu_id=sh.stu_id and
+		sh.tea_hw_id=#{teaHwId})
+	</select>
+
+	<resultMap id="StatisticsMap" type="com.ccw.testonline.vo.ClassStatisticsVo">
+		<result column="class_id" property="classId" jdbcType="INTEGER" />
+		<result column="class_name" property="className" jdbcType="VARCHAR" />
+		<result column="min" property="minScore" jdbcType="FLOAT" />
+		<result column="max" property="maxScore" jdbcType="FLOAT" />
+		<result column="avg" property="avgScore" jdbcType="FLOAT" />
+	</resultMap>
+
+	<select id="findClassStatistics" parameterType="java.util.Map"
+		resultMap="StatisticsMap">
+		select c.class_id,c.class_name,
+		min(score) as min,max(score) as max,avg(score) as avg from Student_Homework sh ,Student as
+		s,Class as c where s.stu_id=sh.stu_id and s.class_id=c.class_id and
+		sh.tea_hw_id=#{teaHwId}
+	</select>
+
+</mapper>

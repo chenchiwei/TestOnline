@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccw.testonline.entity.Options" >
+  <resultMap id="BaseResultMap" type="com.ccw.testonline.entity.Options" >
+    <id column="option_id" property="optionId" jdbcType="INTEGER" />
+    <result column="question_id" property="questionId" jdbcType="INTEGER" />
+    <result column="option_content" property="optionContent" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    option_id, question_id, option_content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from Options
+    where option_id = #{optionId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from Options
+    where option_id = #{optionId,jdbcType=INTEGER}
+  </delete>
+ 
+  <delete id="deleteByQueId" parameterType="java.lang.Integer" >
+    delete from Options
+    where question_id = #{questionId,jdbcType=INTEGER}
+  </delete> 
+  
+  <insert id="insert" parameterType="com.ccw.testonline.entity.Options" >
+    insert into Options (option_id, question_id, option_content
+      )
+    values (#{optionId,jdbcType=INTEGER}, #{questionId,jdbcType=INTEGER}, #{optionContent,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.ccw.testonline.entity.Options" >
+    insert into Options
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="optionId != null" >
+        option_id,
+      </if>
+      <if test="question.questionId != null" >
+        question_id,
+      </if>
+      <if test="optionContent != null" >
+        option_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="optionId != null" >
+        #{optionId,jdbcType=INTEGER},
+      </if>
+      <if test="question.questionId != null" >
+        #{question.questionId,jdbcType=INTEGER},
+      </if>
+      <if test="optionContent != null" >
+        #{optionContent,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.ccw.testonline.entity.Options" >
+    update Options
+    <set >
+      <if test="questionId != null" >
+        question_id = #{questionId,jdbcType=INTEGER},
+      </if>
+      <if test="optionContent != null" >
+        option_content = #{optionContent,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where option_id = #{optionId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ccw.testonline.entity.Options" >
+    update Options
+    set question_id = #{questionId,jdbcType=INTEGER},
+      option_content = #{optionContent,jdbcType=VARCHAR}
+    where option_id = #{optionId,jdbcType=INTEGER}
+  </update>
+</mapper>

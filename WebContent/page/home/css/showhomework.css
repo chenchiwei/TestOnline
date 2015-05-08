@@ -1,0 +1,23 @@
+body{
+	padding:25px;
+}
+
+.title{
+	width:auto;
+	color:#479af5;
+	text-align: center;
+	margin: 0 auto;
+}
+
+.scoreNum{
+	color:red;
+	margin-left: 30px;
+}
+
+.line{
+	height: 10px;
+}
+
+.answer{
+	color:red;
+}

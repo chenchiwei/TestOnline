@@ -1,0 +1,30 @@
+body{
+	background-image: url("../images/background.png");
+}
+
+.header{
+	height: 150px;
+}
+
+.content{
+	height:auto;
+	max-height:1000px;
+	border: 1px solid #ccc;
+}
+
+.left-nav .accordion{
+	border: 0px;
+}
+
+.content-right{
+	border: 1px solid #ccc;
+	height: inherit;
+}
+
+.footer{
+	display:block;
+	height:100px;
+	position: absolute;
+	bottom: 45px;
+	z-index: 1;
+}

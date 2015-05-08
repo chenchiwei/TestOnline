@@ -1,0 +1,16 @@
+
+.ftitle{
+	text-align: center;
+	font: 16px bold;
+	height:20px;
+	padding: 5px;
+}
+
+.fitem{
+	text-align: center;
+	margin: 10px 5px;
+}
+
+.fitem label span{
+	color: red;
+}

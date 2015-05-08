@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<mappers>
+		<mapper resource="com/ccw/testonline/mapping/StudentMapper.xml" />
+		<mapper resource="com/ccw/testonline/mapping/ClassesMapper.xml" />
+		<mapper resource="com/ccw/testonline/mapping/SchoolMapper.xml" />
+		<mapper resource="com/ccw/testonline/mapping/AcademyMapper.xml" />
+		<mapper resource="com/ccw/testonline/mapping/MajorMapper.xml" />
+		<mapper resource="com/ccw/testonline/mapping/TeacherMapper.xml" />
+		<mapper resource="com/ccw/testonline/mapping/CourseMapper.xml" />
+
+		<mapper resource="com/ccw/testonline/mapping/QuestionMapper.xml" />
+
+		<mapper resource="com/ccw/testonline/mapping/OptionsMapper.xml" />
+
+		<mapper resource="com/ccw/testonline/mapping/HomeworkMapper.xml" />
+
+		<mapper resource="com/ccw/testonline/mapping/AnswerMapper.xml" />
+
+		<mapper resource="com/ccw/testonline/mapping/ClassHomeworkMapper.xml" />
+		<mapper resource="com/ccw/testonline/mapping/TeacherCourseMapper.xml" />
+
+		<mapper resource="com/ccw/testonline/mapping/HomeWorkQuestionMapper.xml" />
+		<mapper resource="com/ccw/testonline/mapping/ClassTeacherMapper.xml" />
+		<mapper resource="com/ccw/testonline/mapping/StudentHomeworkMapper.xml" />
+		<mapper resource="com/ccw/testonline/mapping/AdminMapper.xml" />
+	</mappers>
+
+</configuration>

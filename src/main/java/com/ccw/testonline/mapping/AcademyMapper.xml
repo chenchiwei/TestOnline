@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccw.testonline.entity.Academy">
+
+	<resultMap id="BaseResultMap" type="com.ccw.testonline.entity.Academy">
+		<id column="academy_id" property="academyId" jdbcType="INTEGER" />
+		<result column="academy_name" property="academyName" jdbcType="VARCHAR" />
+		<result column="academy_desc" property="academyDesc" jdbcType="VARCHAR" />
+
+		<association property="school" column="SCHOOL_ID"
+			javaType="com.ccw.testonline.entity.School">
+			<id column="school_id" property="schoolId" jdbcType="INTEGER" />
+			<result column="school_name" property="schoolName" jdbcType="VARCHAR" />
+			<result column="school_desc" property="schoolDesc" jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+	
+	<resultMap id="ResultMap" type="com.ccw.testonline.bean.ResultBean">
+		<id column="academy_id" property="id" jdbcType="INTEGER" />
+		<result column="academy_name" property="value" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="SingleTable">
+	
+		Academy as a,School as s
+	</sql>
+
+	<sql id="TableName">
+		Academy as a,School as s
+	</sql>
+
+	<!-- 查询 -->
+	<sql id="mainSql">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		<include refid="TableName" />
+	</sql>
+
+	<sql id="varSql">
+		<where>
+			<if test="school_id!=null">and a.school_id = s.school_id </if>
+			<if test="academy_name!=null and academy_name!=''">and a.academy_name like #{academyName} </if>
+			<if test="academy_desc!=null and academy_desc!=''">and a.ACADEMY_DESC like #{academyDesc} </if>
+		</where>
+	</sql>
+
+	<select id="findListByPage" parameterType="Map" resultMap="BaseResultMap">
+		<include refid="mainSql" />
+		<include refid="varSql" />
+		<if test="SORT != null and SORT != ''">
+			order by ${SORT}
+			<if test="DIR != null and DIR != ''">
+				${DIR}
+			</if>
+		</if>
+	</select>
+	<select id="findAll" parameterType="Map" resultMap="ResultMap">
+		select * from
+		Academy
+	</select>
+	<select id="getCount" parameterType="java.util.Map" resultType="INTEGER">
+		SELECT
+		COUNT(*) AS C
+		FROM
+		<include refid="TableName" />
+		<include refid="varSql" />
+	</select>
+
+	<sql id="Base_Column_List">
+		a.academy_id, a.school_id, a.academy_name, a.academy_desc
+	</sql>
+
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from Academy as a
+		where a.academy_id = #{academyId,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		Academy
+		where academy_id = #{academyId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.ccw.testonline.entity.Academy">
+		insert into Academy
+		(academy_id, school_id, academy_name,
+		academy_desc)
+		values
+		(#{academyId,jdbcType=INTEGER}, #{schoolId,jdbcType=INTEGER},
+		#{academyName,jdbcType=VARCHAR},
+		#{academyDesc,jdbcType=VARCHAR})
+	</insert>
+
+	<insert id="insertSelective" parameterType="com.ccw.testonline.entity.Academy">
+		insert into Academy
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="academyId != null">
+				academy_id,
+			</if>
+			<if test="school.schoolId != null">
+				school_id,
+			</if>
+			<if test="academyName != null">
+				academy_name,
+			</if>
+			<if test="academyDesc != null">
+				academy_desc,
+			</if>
+		</trim>
+
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="academyId != null">
+				#{academyId,jdbcType=INTEGER},
+			</if>
+			<if test="school.schoolId != null">
+				#{school.schoolId,jdbcType=INTEGER},
+			</if>
+			<if test="academyName != null">
+				#{academyName,jdbcType=VARCHAR},
+			</if>
+			<if test="academyDesc != null">
+				#{academyDesc,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.ccw.testonline.entity.Academy">
+		update Academy
+		<set>
+			<if test="school.schoolId != null">
+				school_id = #{school.schoolId,jdbcType=INTEGER},
+			</if>
+			<if test="academyName != null">
+				academy_name = #{academyName,jdbcType=VARCHAR},
+			</if>
+			<if test="academyDesc != null">
+				academy_desc = #{academyDesc,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where academy_id = #{academyId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ccw.testonline.entity.Academy">
+		update Academy
+		set
+		school_id = #{school.schoolId,jdbcType=INTEGER},
+		academy_name =
+		#{academyName,jdbcType=VARCHAR},
+		academy_desc =
+		#{academyDesc,jdbcType=VARCHAR}
+		where academy_id =
+		#{academyId,jdbcType=INTEGER}
+	</update>
+</mapper>

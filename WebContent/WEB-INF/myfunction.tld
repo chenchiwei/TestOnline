@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"  
+    version="2.0">  
+    <description>my jstl functions library</description>  
+    <display-name>my jstl functions</display-name>  
+    <tlib-version>1.0</tlib-version>  
+    <short-name>myfn</short-name>  
+    <uri>/WEB-INF/myfunction.tld</uri>  
+  
+    <function>  
+        <name>isContain</name>  
+        <function-class>com.ccw.testonline.common.utils.MyFunction</function-class>  
+        <function-signature>  
+            boolean isContain(java.util.Collection,java.lang.Object)  
+        </function-signature>  
+    </function>
+    
+    <function>  
+        <name>isCheckBoxAnswer</name>  
+        <function-class>com.ccw.testonline.common.utils.MyFunction</function-class>  
+        <function-signature>  
+            boolean isCheckBoxAnswer(java.util.List,java.lang.String)  
+        </function-signature>  
+    </function>    
+</taglib> 

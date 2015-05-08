@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<privilege>
+	<!-- 权限分配 -->
+	<admin type="0">
+		<resource>学生管理</resource>
+		<resource>学校管理</resource>
+		<resource>学院管理</resource>
+		<resource>专业管理</resource>
+		<resource>班级管理</resource>
+		<resource>教师管理</resource>
+		<resource>课程管理</resource>
+		<resource>题目管理</resource>
+		<resource>管理员题库管理</resource>
+	<!-- 	<resource>作业管理</resource> -->
+		<resource>课程管理</resource>
+		<!-- <resource>作业模块</resource> -->
+	</admin>
+	
+	<!-- 权限分配 -->
+	<teacher type="1">
+		<resource>教师管理</resource>
+		<resource>课程管理</resource>、
+		<resource>班级管理</resource>
+		<resource>作业模块</resource>
+		<resource>题库管理</resource>
+		<resource>题目管理</resource>
+		<resource>作业管理</resource>
+		<resource>新增作业</resource>
+		<resource>修改作业</resource>
+		<resource>删除作业</resource>
+	</teacher>
+	
+	<!-- 权限分配 -->
+	<student type="2">
+		<resource>学生管理</resource>
+		<resource>作业模块</resource>
+		<resource>查看未完成作业</resource>
+		<resource>查看已完成作业</resource>
+		<resource>完成作业</resource>
+		<resource>题库管理</resource>
+		<resource>查看作业</resource>
+	</student>
+</privilege>

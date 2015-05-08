@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccw.testonline.entity.Course">
+	<resultMap id="BaseResultMap" type="com.ccw.testonline.entity.Course">
+		<id column="course_id" property="courseId" jdbcType="INTEGER" />
+		<result column="course_name" property="courseName" jdbcType="VARCHAR" />
+		<result column="course_desc" property="courseDesc" jdbcType="VARCHAR" />
+
+		<collection property="teacherCourse"
+			ofType="com.ccw.testonline.entity.TeacherCourse">
+			<id column="tea_course_id" property="teaCourseId" jdbcType="INTEGER" />
+
+			<association property="teacher" column="tea_id"
+				javaType="com.ccw.testonline.entity.Teacher">
+				<id column="tea_id" property="teaId" jdbcType="INTEGER" />
+				<result column="tea_name" property="teaName" jdbcType="VARCHAR" />
+			</association>
+
+		</collection>
+	</resultMap>
+
+	<resultMap id="ReturnMap" type="com.ccw.testonline.bean.ResultBean">
+		<id column="course_id" property="id" jdbcType="INTEGER" />
+		<result column="course_name" property="value" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		course_id, course_name, course_desc
+	</sql>
+
+	<select id="findAllByTeaId" resultMap="ReturnMap">
+		select c.course_id,c.course_name from Course as c,Teacher_Course as tc
+		where tc.course_id=c.course_id and tc.tea_id=#{teaId}
+
+	</select>
+	
+	<select id="findAll" resultMap="ReturnMap">
+		select c.course_id,c.course_name from Course as c
+	</select>
+
+
+	<!-- 表名 -->
+	<sql id="TableName">
+		Course
+	</sql>
+
+	<!-- 查询 -->
+	<sql id="mainSql">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		<include refid="TableName" />
+	</sql>
+
+	<select id="findListByPage" parameterType="Map" resultMap="BaseResultMap">
+		<include refid="mainSql" />
+		<if test="SORT != null and SORT != ''">
+			order by ${SORT}
+			<if test="DIR != null and DIR != ''">
+				${DIR}
+			</if>
+		</if>
+	</select>
+
+	<select id="getCount" parameterType="java.util.Map" resultType="INTEGER">
+		SELECT
+		COUNT(*) AS C
+		FROM
+		<include refid="TableName" />
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select * from Course as c,Teacher_Course as tc
+		where tc.course_id=c.course_id and c.course_id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from Course
+		where course_id = #{courseId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.ccw.testonline.entity.Course">
+		insert into Course (course_id, course_name, course_desc
+		)
+		values (#{courseId,jdbcType=INTEGER}, #{courseName,jdbcType=VARCHAR},
+		#{courseDesc,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="courseId"  parameterType="com.ccw.testonline.entity.Course">
+		insert into Course
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="courseId != null">
+				course_id,
+			</if>
+			<if test="courseName != null">
+				course_name,
+			</if>
+			<if test="courseDesc != null">
+				course_desc,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="courseId != null">
+				#{courseId,jdbcType=INTEGER},
+			</if>
+			<if test="courseName != null">
+				#{courseName,jdbcType=VARCHAR},
+			</if>
+			<if test="courseDesc != null">
+				#{courseDesc,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.ccw.testonline.entity.Course">
+		update Course
+		<set>
+			<if test="courseName != null">
+				course_name = #{courseName,jdbcType=VARCHAR},
+			</if>
+			<if test="courseDesc != null">
+				course_desc = #{courseDesc,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where course_id = #{courseId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ccw.testonline.entity.Course">
+		update Course
+		set course_name = #{courseName,jdbcType=VARCHAR},
+		course_desc = #{courseDesc,jdbcType=VARCHAR}
+		where course_id = #{courseId,jdbcType=INTEGER}
+	</update>
+</mapper>

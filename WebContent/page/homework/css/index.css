@@ -1,0 +1,10 @@
+.selectQuestion{
+	background-color: #3a87ad;
+	border-radius: 3px;	
+}
+
+#queLabel{
+	border: 1px solid #ccc;
+	background: #fcfcfd;
+	padding: 5px;
+}
