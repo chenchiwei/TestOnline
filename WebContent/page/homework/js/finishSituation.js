@@ -83,9 +83,7 @@ testonline.situation= {
             		}else{
             			$('.datagrid-body').eq(1).html('').append('<p style="text-align:center; line-height:280px;">暂无作业信息！</p>');
             		}
-            	}else{
-            		//common.setEllipsis($('.datagrid-cell-c1-title'),$('.datagrid-cell-c1-content'),$('.datagrid-cell-c1-resource'),$('.datagrid-cell-c1-author'));//设置name列内容过长省略
-				}
+            	}
             	
             },
             onLoadError : function(){

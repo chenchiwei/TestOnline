@@ -161,10 +161,7 @@ testonline.homework = {
 												.append(
 														'<p style="text-align:center; line-height:280px;">暂无作业信息！</p>');
 									}
-								} else {
-									// common.setEllipsis($('.datagrid-cell-c1-title'),$('.datagrid-cell-c1-content'),$('.datagrid-cell-c1-resource'),$('.datagrid-cell-c1-author'));//设置name列内容过长省略
-								}
-
+								} 
 							},
 							onLoadError : function() {
 								$('.datagrid-body')
@@ -505,10 +502,7 @@ testonline.homework = {
 													.append(
 															'<p style="text-align:center; line-height:280px;">暂无题目信息！</p>');
 										}
-									} else {
-										// common.setEllipsis($('.datagrid-cell-c1-title'),$('.datagrid-cell-c1-content'),$('.datagrid-cell-c1-resource'),$('.datagrid-cell-c1-author'));//设置name列内容过长省略
-									}
-
+									} 
 								},
 								onLoadError : function() {
 									$('.datagrid-body')
@@ -541,12 +535,6 @@ testonline.homework = {
 			$(".selectQuestion").remove();
 			console.log(rows);
 			for (var i = 0; i < rows.length; i++) {
-
-				// $("#question").append("&nbsp;<a href='#'
-				// onclick='javascript:$(this).remove()'
-				// style='background-color:#3a87ad;border-radius:3px;padding:3px;color:white;text-decoration:none;'
-				// class='selectQuestion'
-				// value='"+rows[i].questionId+"'>"+rows[i].questionContent.substring(0,5)+"</a>&nbsp;");
 				$("#selectQuestion")
 						.after(
 								"<a href='#' onclick='javascript:$(this).remove()' style='background-color:#3a87ad;border-radius:3px;padding:3px;color:white;text-decoration:none;margin:0 2px;' score='"
@@ -633,9 +621,7 @@ testonline.homework = {
 													.append(
 															'<p style="text-align:center; line-height:280px;">暂无班级信息！</p>');
 										}
-									} else {
-										// common.setEllipsis($('.datagrid-cell-c1-title'),$('.datagrid-cell-c1-content'),$('.datagrid-cell-c1-resource'),$('.datagrid-cell-c1-author'));//设置name列内容过长省略
-									}
+									} 
 
 								},
 								onLoadError : function() {
@@ -665,14 +651,7 @@ testonline.homework = {
 			$.messager.alert('提示', "请选择一条记录！");
 		} else {
 			$(".selectQuestion1").remove();
-			// $("#classDiv").after("<div class='fitem' id='class'></div>");
 			for (var i = 0; i < rows.length; i++) {
-
-				// $("#class").append("&nbsp;<a href='#'
-				// onclick='javascript:$(this).remove()'
-				// style='background-color:#3a87ad;border-radius:3px;padding:3px;color:white;text-decoration:none;'
-				// class='selectQuestion1'
-				// value='"+rows[i].classId+"'>"+rows[i].className+"</a>&nbsp;");
 				$("#selectQuestion1")
 						.after(
 								"<a href='#' onclick='javascript:$(this).remove()' style='background-color:#3a87ad;border-radius:3px;padding:3px;color:white;text-decoration:none;margin:0 2px;' class='selectQuestion1' id='"

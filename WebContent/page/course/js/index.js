@@ -8,20 +8,10 @@ testonline.course= {
 		testonline.course.setDataGrig();
 		testonline.course.setAddBtn();
 		testonline.course.setEditBtn();
-		/*testonline.course.setSearchBtn();*/
-		/*$.ajax({
-			type:'post',
-			url:"home/findAllSupplyInfo",
-			dataType:'json',
-//			data:{jsondata:"{'groupTypeId':1,'commonTraitId':29,'flowVelocity':0.11,'waveHeight':2,'maxTideRange':11," +
-//					"'waterHeight':56,'takeUpAcreage':80000,'typhoonLevel':12,'tideType':'半日潮','seareaType':'内海','feedClass':'大鱼'}",page:1,rows:10}
-			data:{page:1,rows:15,jsondata:"{'dataType':'供应','sort':'readCountDesc','ids':[46,37]}"}
-		});*/
 	},
 	statusSave : "保存",
 	statusPublish : "发布",
 	statusIvalid : "失效",
-	//查询状态记录 ，""为未查询 ， "查询"则是查询状态
 	searchStat : '',
 	/**
 	 * 初始化表格
@@ -60,9 +50,7 @@ testonline.course= {
             		}else{
             			$('.datagrid-body').eq(1).html('').append('<p style="text-align:center; line-height:280px;">暂无课程信息！</p>');
             		}
-            	}else{
-            		//common.setEllipsis($('.datagrid-cell-c1-title'),$('.datagrid-cell-c1-content'),$('.datagrid-cell-c1-resource'),$('.datagrid-cell-c1-author'));//设置name列内容过长省略
-				}
+            	}
             	
             },
             onLoadError : function(){
@@ -265,5 +253,4 @@ testonline.course= {
 };
 $(function() {
 	testonline.course.init();
-
 });
