@@ -19,7 +19,7 @@ public interface BaseBean<T> {
 	
 	/**
 	 * 转换成实体类
-	 * @return
+	 * @return 实体
 	 * @throws ValidateException 
 	 */
 	public T toAddEntity() throws ValidateException;
